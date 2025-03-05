@@ -44,7 +44,8 @@ export default function Login() {
         }),
       });
 
-      navigate("/app");
+      // Direct to delivery page instead of generic app page
+      navigate("/delivery");
     } catch (error) {
       console.error("Login failed", error);
     }
