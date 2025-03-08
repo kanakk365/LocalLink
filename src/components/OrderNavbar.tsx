@@ -90,26 +90,11 @@ const OrderNavbar: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
                         d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                     </svg>
-                    Delivery
+                    Deliver Something
                   </div>
                 </Link>
                 
-                <Link
-                  to="/orders"
-                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                    isOrderPage 
-                      ? "bg-blue-100 text-blue-800" 
-                      : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                  }`}
-                >
-                  <div className="flex items-center">
-                    <svg className="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                    </svg>
-                    Orders
-                  </div>
-                </Link>
+               
               </>
             )}
             
@@ -222,16 +207,7 @@ const OrderNavbar: React.FC = () => {
                   Delivery
                 </Link>
                 
-                <Link
-                  to="/orders"
-                  className={`block px-3 py-2 rounded-md text-base font-medium ${
-                    isOrderPage 
-                      ? "bg-blue-100 text-blue-800" 
-                      : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                  }`}
-                >
-                  Orders
-                </Link>
+                
               </>
             )}
 
