@@ -3,6 +3,8 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import DeliveryPage from './pages/DeliveryPage';
 import OrderPage from './pages/OrderPage';
+import MyOrdersPage from './pages/MyOrdersPage';
+import ActiveRoutesPage from './pages/ActiveRoutesPage';
 import { useSelector } from 'react-redux';
 import { RootState } from './store/store';
 
@@ -16,6 +18,8 @@ function App() {
         <Route path='/login' element={<Login/>} />
         <Route path='/delivery' element={<DeliveryPage/>} />
         <Route path='/orders' element={<OrderPage/>} />
+        <Route path='/my-orders' element={<MyOrdersPage/>} />
+        <Route path='/active-routes' element={<ActiveRoutesPage/>} />
         
         {/* Redirect /app to either /delivery or /orders based on authentication */}
         <Route path='/app' element={

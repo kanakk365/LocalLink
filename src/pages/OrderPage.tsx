@@ -1,79 +1,144 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { Link, Navigate } from "react-router-dom";
-import AvailableRoutes from "../components/RouteComponents/AvailableRoutes";
-import MyOrders from "../components/RouteComponents/MyOrders";
-import AppNav from "../components/AppNav";
+import { Navigate } from "react-router-dom";
+import OrderNavbar from "@/components/OrderNavbar";
 
 const OrderPage: React.FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const [activeTab, setActiveTab] = useState<"available" | "my-orders">("available");
+  const [deliveryDate, setDeliveryDate] = useState("");
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
-      <AppNav />
-      <div className="max-w-4xl mx-auto px-4 py-8 pt-24">
-        {/* Title Area */}
-        <div className="mb-6 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold">Order Delivery</h1>
-            <p className="text-gray-600 mt-1">
-              Request items to be delivered by people traveling your route
-            </p>
-          </div>
-          <Link 
-            to="/delivery" 
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium flex items-center"
-          >
-            <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-            </svg>
-            Switch to Delivery
-          </Link>
-        </div>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      <OrderNavbar/>
+      <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-24 pb-12">
+       
 
-        {/* Main Content Area */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="flex border-b border-gray-200">
-            <button
-              className={`flex-1 py-4 px-4 text-center font-medium ${
-                activeTab === "available"
-                  ? "text-black border-b-2 border-black"
-                  : "text-gray-500 hover:text-gray-800"
-              }`}
-              onClick={() => setActiveTab("available")}
-            >
-              <div className="flex items-center justify-center">
-                <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-                </svg>
-                Available Routes
+        <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
+          {/* Form Section - 30% width */}
+          <div className="lg:col-span-3 bg-white rounded-xl shadow-sm p-6 border border-gray-200">
+            <form className="space-y-6">
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-gray-900">Delivery Details</h2>
+                
+                <div className="space-y-4">
+                  <div>
+                    <label htmlFor="pickup" className="block text-sm font-medium text-gray-700 mb-1">
+                      Pickup Location
+                    </label>
+                    <input 
+                      type="text" 
+                      id="pickup"
+                      placeholder="Enter pickup address" 
+                      className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="dropoff" className="block text-sm font-medium text-gray-700 mb-1">
+                      Dropoff Location
+                    </label>
+                    <input 
+                      type="text" 
+                      id="dropoff"
+                      placeholder="Enter destination address" 
+                      className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="item" className="block text-sm font-medium text-gray-700 mb-1">
+                    Item Name
+                  </label>
+                  <input 
+                    type="text" 
+                    id="item"
+                    placeholder="What are you sending?" 
+                    className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+                    Item Description
+                  </label>
+                  <textarea 
+                    id="description" 
+                    rows={4}
+                    placeholder="Include size, weight, handling instructions, etc." 
+                    className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="deliveryTime" className="block text-sm font-medium text-gray-700 mb-1">
+                    Delivery Deadline
+                  </label>
+                  <input 
+                    type="datetime-local" 
+                    id="deliveryTime"
+                    value={deliveryDate}
+                    onChange={(e) => setDeliveryDate(e.target.value)}
+                    className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-1">
+                    Maximum Budget (₹)
+                  </label>
+                  <input 
+                    type="number" 
+                    id="budget"
+                    min="0"
+                    step="0.01"
+                    placeholder="How much are you willing to pay?" 
+                    className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
               </div>
-            </button>
-            <button
-              className={`flex-1 py-4 px-4 text-center font-medium ${
-                activeTab === "my-orders"
-                  ? "text-black border-b-2 border-black"
-                  : "text-gray-500 hover:text-gray-800"
-              }`}
-              onClick={() => setActiveTab("my-orders")}
-            >
-              <div className="flex items-center justify-center">
-                <svg className="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                </svg>
-                My Orders
+
+              <div className="pt-5">
+                <button
+                  type="submit"
+                  className="w-full py-3 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#0a0a0a] hover:bg-[#282828] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  Create Order
+                </button>
               </div>
-            </button>
+            </form>
           </div>
 
-          <div className="p-6">
-            {activeTab === "available" ? <AvailableRoutes /> : <MyOrders />}
+          {/* Map Section - 70% width */}
+          <div className="lg:col-span-7">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-full">
+              <div className="p-4 border-b border-gray-200">
+                <h2 className="font-medium text-gray-900">Delivery Route</h2>
+                <p className="text-sm text-gray-500">Preview the route on the map</p>
+              </div>
+              <div className="bg-gray-200 h-[600px] flex items-center justify-center">
+                <div className="text-center p-4">
+                  <svg 
+                    className="mx-auto h-12 w-12 text-gray-400" 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    strokeWidth={1.5} 
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
+                  </svg>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Map will display your route after entering locations
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
