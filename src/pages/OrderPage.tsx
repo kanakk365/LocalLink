@@ -1,21 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, FormEvent } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { Navigate } from "react-router-dom";
 import OrderNavbar from "@/components/OrderNavbar";
+import axios from "axios";
 
 const OrderPage: React.FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const [pickupLocation , setPickupLocation] = useState<string | "">("")
-  const [dropoffLocation , setDropoffLocation] = useState<string | "">("")
-  const [itemName, setItemName] = useState("")
-  const [itemDescription, setItemDescription] = useState<string | "">("")
-  const [deliveryDeadline, setDeliveryDeadline] = useState<string | "">("")
-  const [maxBudget, setMaxBudget] = useState<number>(0)
+  const [pickupLocation, setPickupLocation] = useState<string>("");
+  const [dropoffLocation, setDropoffLocation] = useState<string>("");
+  const [itemName, setItemName] = useState("");
+  const [itemDescription, setItemDescription] = useState<string>("");
+  const [deliveryDeadline, setDeliveryDeadline] = useState<string>("");
+  const [maxBudget, setMaxBudget] = useState<number>(0);
 
-  const handleSubmit= async () =>{
-    console.log(pickupLocation, dropoffLocation , itemName, itemDescription, deliveryDeadline, maxBudget)
-  }
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log(pickupLocation, dropoffLocation, itemName, itemDescription, deliveryDeadline, maxBudget);
+    
+    const formData = new FormData()
+
+    formData.append("pickupLocation" , pickupLocation)
+    formData.append("dropoffLocation" , dropoffLocation)
+    formData.append("itemName" , itemName) 
+    formData.append("itemDescription" , itemDescription)
+    formData.append("deliveryDeadline" , deliveryDeadline)
+    formData.append("maxBudget" , maxBudget.toString())
+
+    try {
+      const res = await axios.post("nobackendsed:(" , formData)
+      console.log(res)
+    } catch (e) {
+      console.log(e)
+    }
+  };
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
@@ -23,13 +41,12 @@ const OrderPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
-      <OrderNavbar/>
+      <OrderNavbar />
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-24 pb-12">
-
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
           {/* Form Section - 30% width */}
           <div className="lg:col-span-3 bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-            <div className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold text-gray-900">Delivery Details</h2>
                 
@@ -39,11 +56,12 @@ const OrderPage: React.FC = () => {
                       Pickup Location
                     </label>
                     <input 
-                    onChange={(e)=>{setPickupLocation(e.target.value)}}
+                      onChange={(e) => setPickupLocation(e.target.value)}
                       type="text" 
                       id="pickup"
                       placeholder="Enter pickup address" 
-                      className="block w-full px-4 py-3 rounded-lg bg-gray-100  focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full px-4 py-3 rounded-lg bg-gray-100 focus:ring-blue-500 focus:border-blue-500"
+                      required
                     />
                   </div>
                   
@@ -56,7 +74,8 @@ const OrderPage: React.FC = () => {
                       type="text" 
                       id="dropoff"
                       placeholder="Enter destination address" 
-                      className="block w-full px-4 py-3 rounded-lg bg-gray-100  focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full px-4 py-3 rounded-lg bg-gray-100 focus:ring-blue-500 focus:border-blue-500"
+                      required
                     />
                   </div>
                 </div>
@@ -70,7 +89,8 @@ const OrderPage: React.FC = () => {
                     type="text" 
                     id="item"
                     placeholder="What are you sending?" 
-                    className="block w-full px-4 py-3 rounded-lg bg-gray-100  focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full px-4 py-3 rounded-lg bg-gray-100 focus:ring-blue-500 focus:border-blue-500"
+                    required
                   />
                 </div>
 
@@ -83,7 +103,7 @@ const OrderPage: React.FC = () => {
                     id="description" 
                     rows={4}
                     placeholder="Include size, weight, handling instructions, etc." 
-                    className="block w-full px-4 py-3 rounded-lg bg-gray-100  focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full px-4 py-3 rounded-lg bg-gray-100 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
                 
@@ -98,7 +118,8 @@ const OrderPage: React.FC = () => {
                     onChange={(e) => {
                       setDeliveryDeadline(e.target.value);
                     }}
-                    className="block w-full px-4 py-3 rounded-lg bg-gray-100  focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full px-4 py-3 rounded-lg bg-gray-100 focus:ring-blue-500 focus:border-blue-500"
+                    required
                   />
                 </div>
                 
@@ -113,20 +134,21 @@ const OrderPage: React.FC = () => {
                     min="0"
                     step="0.01"
                     placeholder="How much are you willing to pay?" 
-                    className="block w-full px-4 py-3 rounded-lg bg-gray-100  focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full px-4 py-3 rounded-lg bg-gray-100 focus:ring-blue-500 focus:border-blue-500"
+                    required
                   />
                 </div>
               </div>
 
               <div className="pt-5">
                 <button
-                  onClick={handleSubmit}
+                  type="submit"
                   className="w-full py-3 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#0a0a0a] hover:bg-[#282828] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   Create Order
                 </button>
               </div>
-            </div>
+            </form>
           </div>
 
           {/* Map Section - 70% width */}
