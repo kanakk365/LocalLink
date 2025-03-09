@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { Navigate } from "react-router-dom";
 import OrderNavbar from "@/components/OrderNavbar";
+import axios from "axios";
 
 // Mock data - would be replaced with actual API data
 const mockOrders = [
@@ -41,6 +42,18 @@ const mockOrders = [
   }
 ];
 
+interface Order {
+  id: string;
+  itemName: string;
+  description: string;
+  pickup: string;
+  dropoff: string;
+  createdAt: string;
+  deliveryDeadline: string;
+  budget: number;
+  status: "pending" | "in-progress" | "completed" | "cancelled";
+}
+
 const statusColors: Record<string, string> = {
   "pending": "bg-yellow-100 text-yellow-800",
   "in-progress": "bg-blue-100 text-blue-800",
@@ -52,6 +65,20 @@ const MyOrdersPage: React.FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
+  const [orders , setOrders]= useState<Order[]>()
+
+  const getOrders = async ()=>{
+    try {
+      const res = await axios.get("lazy_backend_dev" )
+    setOrders(res.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(()=>{
+    getOrders()
+  },[])
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
