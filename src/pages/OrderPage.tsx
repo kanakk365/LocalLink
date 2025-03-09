@@ -6,7 +6,16 @@ import OrderNavbar from "@/components/OrderNavbar";
 
 const OrderPage: React.FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const [deliveryDate, setDeliveryDate] = useState("");
+  const [pickupLocation , setPickupLocation] = useState<string | "">("")
+  const [dropoffLocation , setDropoffLocation] = useState<string | "">("")
+  const [itemName, setItemName] = useState("")
+  const [itemDescription, setItemDescription] = useState<string | "">("")
+  const [deliveryDeadline, setDeliveryDeadline] = useState<string | "">("")
+  const [maxBudget, setMaxBudget] = useState<number>(0)
+
+  const handleSubmit= async () =>{
+    console.log(pickupLocation, dropoffLocation , itemName, itemDescription, deliveryDeadline, maxBudget)
+  }
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
@@ -16,12 +25,11 @@ const OrderPage: React.FC = () => {
     <div className="min-h-screen bg-white flex flex-col">
       <OrderNavbar/>
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-24 pb-12">
-       
 
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
           {/* Form Section - 30% width */}
           <div className="lg:col-span-3 bg-white rounded-xl shadow-sm p-6 border border-gray-200">
-            <form className="space-y-6">
+            <div className="space-y-6">
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold text-gray-900">Delivery Details</h2>
                 
@@ -31,10 +39,11 @@ const OrderPage: React.FC = () => {
                       Pickup Location
                     </label>
                     <input 
+                    onChange={(e)=>{setPickupLocation(e.target.value)}}
                       type="text" 
                       id="pickup"
                       placeholder="Enter pickup address" 
-                      className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full px-4 py-3 rounded-lg bg-gray-100  focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
                   
@@ -43,10 +52,11 @@ const OrderPage: React.FC = () => {
                       Dropoff Location
                     </label>
                     <input 
+                      onChange={(e) => setDropoffLocation(e.target.value)}
                       type="text" 
                       id="dropoff"
                       placeholder="Enter destination address" 
-                      className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                      className="block w-full px-4 py-3 rounded-lg bg-gray-100  focus:ring-blue-500 focus:border-blue-500"
                     />
                   </div>
                 </div>
@@ -56,10 +66,11 @@ const OrderPage: React.FC = () => {
                     Item Name
                   </label>
                   <input 
+                    onChange={(e) => setItemName(e.target.value)}
                     type="text" 
                     id="item"
                     placeholder="What are you sending?" 
-                    className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full px-4 py-3 rounded-lg bg-gray-100  focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
@@ -68,10 +79,11 @@ const OrderPage: React.FC = () => {
                     Item Description
                   </label>
                   <textarea 
+                    onChange={(e) => setItemDescription(e.target.value)}
                     id="description" 
                     rows={4}
                     placeholder="Include size, weight, handling instructions, etc." 
-                    className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full px-4 py-3 rounded-lg bg-gray-100  focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
                 
@@ -82,9 +94,11 @@ const OrderPage: React.FC = () => {
                   <input 
                     type="datetime-local" 
                     id="deliveryTime"
-                    value={deliveryDate}
-                    onChange={(e) => setDeliveryDate(e.target.value)}
-                    className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    value={deliveryDeadline}
+                    onChange={(e) => {
+                      setDeliveryDeadline(e.target.value);
+                    }}
+                    className="block w-full px-4 py-3 rounded-lg bg-gray-100  focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
                 
@@ -93,25 +107,26 @@ const OrderPage: React.FC = () => {
                     Maximum Budget (₹)
                   </label>
                   <input 
+                    onChange={(e) => setMaxBudget(Number(e.target.value))}
                     type="number" 
                     id="budget"
                     min="0"
                     step="0.01"
                     placeholder="How much are you willing to pay?" 
-                    className="block w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
+                    className="block w-full px-4 py-3 rounded-lg bg-gray-100  focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
               </div>
 
               <div className="pt-5">
                 <button
-                  type="submit"
+                  onClick={handleSubmit}
                   className="w-full py-3 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#0a0a0a] hover:bg-[#282828] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   Create Order
                 </button>
               </div>
-            </form>
+            </div>
           </div>
 
           {/* Map Section - 70% width */}
