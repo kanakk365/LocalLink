@@ -64,6 +64,55 @@ const mockDeliveredOrders = [
   }
 ];
 
+// Mock in-transit orders data - orders accepted by delivery partner but not yet delivered
+const mockInTransitOrders = [
+  {
+    id: "order-201",
+    itemName: "Medical Package",
+    itemDescription: "Prescription medications, time-sensitive",
+    pickupLocation: "Powai Hospital, Mumbai",
+    deliveryLocation: "Juhu Residence, Mumbai",
+    status: "in-transit",
+    createdAt: "2023-08-18T09:30:00",
+    estimatedDelivery: "2023-08-18T12:45:00",
+    customerName: "Ravi Kumar",
+    customerPhone: "+91 98765 43210",
+    price: 180,
+    acceptedAt: "2023-08-18T10:15:00",
+    pickupCompleted: true
+  },
+  {
+    id: "order-202",
+    itemName: "Jewelry Box",
+    itemDescription: "High-value item, requires signature on delivery",
+    pickupLocation: "Jewelry Store, Bangalore",
+    deliveryLocation: "Koramangala Apartment, Bangalore",
+    status: "in-transit",
+    createdAt: "2023-08-18T10:45:00",
+    estimatedDelivery: "2023-08-18T14:30:00",
+    customerName: "Sneha Patel",
+    customerPhone: "+91 87654 32109",
+    price: 250,
+    acceptedAt: "2023-08-18T11:00:00",
+    pickupCompleted: true
+  },
+  {
+    id: "order-203",
+    itemName: "Fresh Food Order",
+    itemDescription: "Restaurant takeout, keep hot, delivery within 30 minutes",
+    pickupLocation: "Restaurant District, Delhi",
+    deliveryLocation: "Office Complex, Delhi",
+    status: "in-transit",
+    createdAt: "2023-08-18T12:15:00",
+    estimatedDelivery: "2023-08-18T12:45:00",
+    customerName: "Vikram Singh",
+    customerPhone: "+91 76543 21098",
+    price: 120,
+    acceptedAt: "2023-08-18T12:20:00",
+    pickupCompleted: false
+  }
+];
+
 // Star rating component
 const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
   return (
@@ -89,6 +138,7 @@ const StarRating: React.FC<{ rating: number }> = ({ rating }) => {
 const OrdersDeliveredPage: React.FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const [timeFilter, setTimeFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("delivered");
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
 
   if (!isAuthenticated) {
@@ -102,13 +152,20 @@ const OrdersDeliveredPage: React.FC = () => {
   oneMonthAgo.setMonth(currentDate.getMonth() - 1);
 
   const filteredOrders = (() => {
-    if (timeFilter === "week") {
-      return mockDeliveredOrders.filter(order => new Date(order.deliveredAt) >= oneWeekAgo);
+    // Select the correct order list based on status filter
+    const ordersList = statusFilter === "delivered" ? mockDeliveredOrders : mockInTransitOrders;
+    
+    // Then apply time filter (only for delivered orders)
+    if (statusFilter === "delivered") {
+      if (timeFilter === "week") {
+        return ordersList.filter(order => new Date(order.deliveredAt) >= oneWeekAgo);
+      }
+      if (timeFilter === "month") {
+        return ordersList.filter(order => new Date(order.deliveredAt) >= oneMonthAgo);
+      }
     }
-    if (timeFilter === "month") {
-      return mockDeliveredOrders.filter(order => new Date(order.deliveredAt) >= oneMonthAgo);
-    }
-    return mockDeliveredOrders;
+    
+    return ordersList;
   })();
 
   const handleOrderClick = (orderId: string) => {
@@ -120,41 +177,68 @@ const OrdersDeliveredPage: React.FC = () => {
       <DeliveryNavbar />
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-24 pb-12">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Orders Delivered</h1>
-          <p className="text-gray-600 mt-1">View your completed delivery history</p>
+          <h1 className="text-2xl font-bold text-gray-900">My Orders</h1>
+          <p className="text-gray-600 mt-1">Manage your accepted and delivered orders</p>
 
+          {/* Status filter buttons */}
           <div className="mt-4 flex flex-wrap gap-2">
             <button 
-              onClick={() => setTimeFilter("all")}
+              onClick={() => setStatusFilter("delivered")}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
-                timeFilter === "all" 
+                statusFilter === "delivered" 
                   ? "bg-gray-900 text-white" 
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
               }`}
             >
-              All Time
+              Delivered
             </button>
             <button 
-              onClick={() => setTimeFilter("month")}
+              onClick={() => setStatusFilter("in-transit")}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
-                timeFilter === "month" 
+                statusFilter === "in-transit" 
                   ? "bg-gray-900 text-white" 
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
               }`}
             >
-              Past Month
-            </button>
-            <button 
-              onClick={() => setTimeFilter("week")}
-              className={`px-4 py-2 rounded-md text-sm font-medium ${
-                timeFilter === "week" 
-                  ? "bg-gray-900 text-white" 
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-              }`}
-            >
-              Past Week
+              In Transit
             </button>
           </div>
+
+          {/* Time filter - only show for delivered orders */}
+          {statusFilter === "delivered" && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button 
+                onClick={() => setTimeFilter("all")}
+                className={`px-4 py-2 rounded-md text-sm font-medium ${
+                  timeFilter === "all" 
+                    ? "bg-gray-900 text-white" 
+                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                }`}
+              >
+                All Time
+              </button>
+              <button 
+                onClick={() => setTimeFilter("month")}
+                className={`px-4 py-2 rounded-md text-sm font-medium ${
+                  timeFilter === "month" 
+                    ? "bg-gray-900 text-white" 
+                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                }`}
+              >
+                Past Month
+              </button>
+              <button 
+                onClick={() => setTimeFilter("week")}
+                className={`px-4 py-2 rounded-md text-sm font-medium ${
+                  timeFilter === "week" 
+                    ? "bg-gray-900 text-white" 
+                    : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                }`}
+              >
+                Past Week
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -179,15 +263,21 @@ const OrdersDeliveredPage: React.FC = () => {
                           <p className="mt-1 text-xs text-gray-500 line-clamp-1">
                             {order.itemDescription}
                           </p>
-                          <div className="mt-1 flex items-center">
-                            <StarRating rating={order.rating} />
-                            <span className="text-xs text-gray-500 ml-1">
-                              ({order.rating}/5)
-                            </span>
-                          </div>
+                          {statusFilter === "delivered" && (
+                            <div className="mt-1 flex items-center">
+                              <StarRating rating={(order as any).rating} />
+                              <span className="text-xs text-gray-500 ml-1">
+                                ({(order as any).rating}/5)
+                              </span>
+                            </div>
+                          )}
                         </div>
-                        <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                          Delivered
+                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          statusFilter === "delivered" 
+                            ? "bg-green-100 text-green-800"
+                            : "bg-blue-100 text-blue-800"
+                        }`}>
+                          {statusFilter === "delivered" ? "Delivered" : "In Transit"}
                         </span>
                       </div>
 
@@ -198,14 +288,20 @@ const OrdersDeliveredPage: React.FC = () => {
                               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
                           <span className="text-gray-600">
-                            Delivered: {new Date(order.deliveredAt).toLocaleDateString()}
+                            {statusFilter === "delivered" 
+                              ? `Delivered: ${new Date((order as any).deliveredAt).toLocaleDateString()}`
+                              : `Expected: ${new Date(order.estimatedDelivery).toLocaleDateString()}`
+                            }
                           </span>
                         </div>
                       </div>
                       
                       <div className="mt-3 flex justify-between items-center">
                         <div className="text-xs text-gray-500">
-                          {order.deliveryPartner}
+                          {statusFilter === "delivered" 
+                            ? (order as any).deliveryPartner
+                            : order.customerName
+                          }
                         </div>
                         <div className="text-sm font-medium">
                           ₹{order.price}
@@ -221,7 +317,10 @@ const OrdersDeliveredPage: React.FC = () => {
                     </svg>
                     <h3 className="mt-2 text-sm font-medium text-gray-900">No orders found</h3>
                     <p className="mt-1 text-sm text-gray-500">
-                      No delivered orders in the selected time period.
+                      {statusFilter === "delivered" 
+                        ? "No delivered orders in the selected time period."
+                        : "You don't have any orders in transit."
+                      }
                     </p>
                   </div>
                 )}
@@ -234,99 +333,217 @@ const OrdersDeliveredPage: React.FC = () => {
             {selectedOrder ? (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-full">
                 {(() => {
-                  const order = mockDeliveredOrders.find(o => o.id === selectedOrder);
+                  const orderList = statusFilter === "delivered" ? mockDeliveredOrders : mockInTransitOrders;
+                  const order = orderList.find(o => o.id === selectedOrder);
                   if (!order) return null;
                   
-                  return (
-                    <>
-                      <div className="p-6 border-b border-gray-200">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h2 className="text-xl font-bold text-gray-900">{order.itemName}</h2>
-                            <p className="text-sm text-gray-500 mt-1">Order #{order.id}</p>
-                          </div>
-                          <span className="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                            Delivered
-                          </span>
-                        </div>
-                        
-                        <div className="mt-4 flex items-center">
-                          <StarRating rating={order.rating} />
-                          <span className="ml-2 text-sm text-gray-700">
-                            {order.rating}/5 Rating
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div className="p-6 border-b border-gray-200">
-                        <h3 className="text-md font-medium text-gray-900 mb-4">Delivery Details</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div>
-                            <p className="text-sm text-gray-500 mb-1">Delivered On</p>
-                            <p className="text-sm font-medium text-gray-900">
-                              {new Date(order.deliveredAt).toLocaleDateString()} at {new Date(order.deliveredAt).toLocaleTimeString()}
-                            </p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-gray-500 mb-1">Order Placed</p>
-                            <p className="text-sm font-medium text-gray-900">
-                              {new Date(order.createdAt).toLocaleDateString()} at {new Date(order.createdAt).toLocaleTimeString()}
-                            </p>
-                          </div>
-                        </div>
-                        
-                        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                          <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">Pickup Location</h4>
-                            <div className="bg-gray-50 p-3 rounded-lg">
-                              <p className="text-sm text-gray-700">{order.pickupLocation}</p>
+                  // Render different content based on order status
+                  if (statusFilter === "delivered") {
+                    // Display delivered order details
+                    const deliveredOrder = order as typeof mockDeliveredOrders[0];
+                    return (
+                      <>
+                        <div className="p-6 border-b border-gray-200">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h2 className="text-xl font-bold text-gray-900">{deliveredOrder.itemName}</h2>
+                              <p className="text-sm text-gray-500 mt-1">Order #{deliveredOrder.id}</p>
                             </div>
-                          </div>
-                          <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">Delivery Location</h4>
-                            <div className="bg-gray-50 p-3 rounded-lg">
-                              <p className="text-sm text-gray-700">{order.deliveryLocation}</p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="p-6 border-b border-gray-200">
-                        <h3 className="text-md font-medium text-gray-900 mb-4">Item Details</h3>
-                        <p className="text-sm text-gray-700 mb-4">
-                          {order.itemDescription}
-                        </p>
-                        
-                        <div className="flex items-center">
-                          <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
-                            <span className="text-white text-sm font-medium">
-                              {order.deliveryPartner.charAt(0)}
+                            <span className="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                              Delivered
                             </span>
                           </div>
-                          <div className="ml-3">
-                            <p className="text-sm font-medium text-gray-900">{order.deliveryPartner}</p>
-                            <p className="text-xs text-gray-500">Delivery Partner</p>
+                          
+                          <div className="mt-4 flex items-center">
+                            <StarRating rating={deliveredOrder.rating} />
+                            <span className="ml-2 text-sm text-gray-700">
+                              {deliveredOrder.rating}/5 Rating
+                            </span>
                           </div>
                         </div>
-                      </div>
-                      
-                      <div className="p-6">
-                        <h3 className="text-md font-medium text-gray-900 mb-3">Feedback</h3>
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                          <p className="text-sm text-gray-700 italic">
-                            "{order.feedback}"
+                        
+                        <div className="p-6 border-b border-gray-200">
+                          <h3 className="text-md font-medium text-gray-900 mb-4">Delivery Details</h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                              <p className="text-sm text-gray-500 mb-1">Delivered On</p>
+                              <p className="text-sm font-medium text-gray-900">
+                                {new Date(deliveredOrder.deliveredAt).toLocaleDateString()} at {new Date(deliveredOrder.deliveredAt).toLocaleTimeString()}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500 mb-1">Order Placed</p>
+                              <p className="text-sm font-medium text-gray-900">
+                                {new Date(deliveredOrder.createdAt).toLocaleDateString()} at {new Date(deliveredOrder.createdAt).toLocaleTimeString()}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                              <h4 className="text-sm font-medium text-gray-900 mb-2">Pickup Location</h4>
+                              <div className="bg-gray-50 p-3 rounded-lg">
+                                <p className="text-sm text-gray-700">{deliveredOrder.pickupLocation}</p>
+                              </div>
+                            </div>
+                            <div>
+                              <h4 className="text-sm font-medium text-gray-900 mb-2">Delivery Location</h4>
+                              <div className="bg-gray-50 p-3 rounded-lg">
+                                <p className="text-sm text-gray-700">{deliveredOrder.deliveryLocation}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="p-6 border-b border-gray-200">
+                          <h3 className="text-md font-medium text-gray-900 mb-4">Item Details</h3>
+                          <p className="text-sm text-gray-700 mb-4">
+                            {deliveredOrder.itemDescription}
+                          </p>
+                          
+                          <div className="flex items-center">
+                            <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
+                              <span className="text-white text-sm font-medium">
+                                {deliveredOrder.deliveryPartner.charAt(0)}
+                              </span>
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-900">{deliveredOrder.deliveryPartner}</p>
+                              <p className="text-xs text-gray-500">Delivery Partner</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="p-6">
+                          <h3 className="text-md font-medium text-gray-900 mb-3">Feedback</h3>
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <p className="text-sm text-gray-700 italic">
+                              "{deliveredOrder.feedback}"
+                            </p>
+                          </div>
+                          
+                          <div className="mt-6 flex justify-between items-center">
+                            <button className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                              Contact Support
+                            </button>
+                            <span className="text-md font-bold text-gray-900">₹{deliveredOrder.price}</span>
+                          </div>
+                        </div>
+                      </>
+                    );
+                  } else {
+                    // Display in-transit order details
+                    const inTransitOrder = order as typeof mockInTransitOrders[0];
+                    return (
+                      <>
+                        <div className="p-6 border-b border-gray-200">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h2 className="text-xl font-bold text-gray-900">{inTransitOrder.itemName}</h2>
+                              <p className="text-sm text-gray-500 mt-1">Order #{inTransitOrder.id}</p>
+                            </div>
+                            <span className="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                              In Transit
+                            </span>
+                          </div>
+                          
+                          <div className="mt-4">
+                            <p className="text-sm text-gray-700">
+                              {inTransitOrder.pickupCompleted ? 
+                                "Item picked up, on the way to delivery" :
+                                "On the way to pickup location"}
+                            </p>
+                            <p className="text-sm font-medium text-gray-900 mt-1">
+                              Expected Delivery: {new Date(inTransitOrder.estimatedDelivery).toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="p-6 border-b border-gray-200">
+                          <h3 className="text-md font-medium text-gray-900 mb-4">Delivery Details</h3>
+                          
+                          <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                              <h4 className="text-sm font-medium text-gray-900 mb-2">Pickup Location</h4>
+                              <div className={`bg-gray-50 p-3 rounded-lg ${inTransitOrder.pickupCompleted ? "bg-green-50" : ""}`}>
+                                <p className="text-sm text-gray-700">{inTransitOrder.pickupLocation}</p>
+                                {inTransitOrder.pickupCompleted && 
+                                  <p className="text-xs text-green-600 mt-1">✓ Pickup completed</p>
+                                }
+                              </div>
+                            </div>
+                            <div>
+                              <h4 className="text-sm font-medium text-gray-900 mb-2">Delivery Location</h4>
+                              <div className="bg-gray-50 p-3 rounded-lg">
+                                <p className="text-sm text-gray-700">{inTransitOrder.deliveryLocation}</p>
+                              </div>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                              <p className="text-sm text-gray-500 mb-1">Accepted At</p>
+                              <p className="text-sm font-medium text-gray-900">
+                                {new Date(inTransitOrder.acceptedAt).toLocaleTimeString()} on {new Date(inTransitOrder.acceptedAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500 mb-1">Order Placed</p>
+                              <p className="text-sm font-medium text-gray-900">
+                                {new Date(inTransitOrder.createdAt).toLocaleTimeString()} on {new Date(inTransitOrder.createdAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="p-6 border-b border-gray-200">
+                          <h3 className="text-md font-medium text-gray-900 mb-4">Item Details</h3>
+                          <p className="text-sm text-gray-700 mb-4">
+                            {inTransitOrder.itemDescription}
                           </p>
                         </div>
                         
-                        <div className="mt-6 flex justify-between items-center">
-                          <button className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-                            Contact Support
-                          </button>
-                          <span className="text-md font-bold text-gray-900">₹{order.price}</span>
+                        <div className="p-6">
+                          <h3 className="text-md font-medium text-gray-900 mb-3">Customer Information</h3>
+                          <div className="flex items-center mb-4">
+                            <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
+                              <span className="text-white text-sm font-medium">
+                                {inTransitOrder.customerName.charAt(0)}
+                              </span>
+                            </div>
+                            <div className="ml-3">
+                              <p className="text-sm font-medium text-gray-900">{inTransitOrder.customerName}</p>
+                              <p className="text-xs text-gray-500">{inTransitOrder.customerPhone}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="mt-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+                            <div className="flex space-x-3">
+                              <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm text-sm font-medium hover:bg-blue-700">
+                                Call Customer
+                              </button>
+                              <button className="flex-1 px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                Message
+                              </button>
+                            </div>
+                            <div className="text-md font-bold text-gray-900">₹{inTransitOrder.price}</div>
+                          </div>
+                          
+                          {!inTransitOrder.pickupCompleted && (
+                            <button className="w-full mt-4 py-3 px-4 bg-green-600 text-white rounded-md shadow-sm text-sm font-medium hover:bg-green-700">
+                              Mark Pickup as Complete
+                            </button>
+                          )}
+                          
+                          {inTransitOrder.pickupCompleted && (
+                            <button className="w-full mt-4 py-3 px-4 bg-green-600 text-white rounded-md shadow-sm text-sm font-medium hover:bg-green-700">
+                              Complete Delivery
+                            </button>
+                          )}
                         </div>
-                      </div>
-                    </>
-                  );
+                      </>
+                    );
+                  }
                 })()}
               </div>
             ) : (

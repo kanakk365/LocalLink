@@ -1,33 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { Navigate } from "react-router-dom";
 import DeliveryNavbar from "@/components/DeliveryComp/DeliveryNavbar";
 
-// Mock active orders data
-const mockActiveOrders = [
+// Mock available orders data - orders posted by users that delivery partners can accept
+const mockAvailableOrders = [
   {
     id: "order-001",
     itemName: "Birthday Gift Package",
     itemDescription: "Wrapped gift box, handle with care, 2kg weight",
     pickupLocation: "Andheri East, Mumbai",
     deliveryLocation: "Bandra West, Mumbai",
-    status: "in-transit",
+    status: "available",
     createdAt: "2023-08-15T10:30:00",
     estimatedDelivery: "2023-08-15T13:30:00",
-    deliveryPartner: "Rahul Singh",
+    customerName: "Amit Sharma",
     price: 120
   },
   {
     id: "order-002",
-    itemName: "Document Folder",
     itemDescription: "Important documents, keep dry, 0.5kg weight",
+    itemName: "Document Folder",
     pickupLocation: "Koramangala, Bangalore",
     deliveryLocation: "HSR Layout, Bangalore",
-    status: "accepted",
+    status: "available",
     createdAt: "2023-08-16T09:15:00",
     estimatedDelivery: "2023-08-16T11:30:00",
-    deliveryPartner: "Priya Patel",
+    customerName: "Priya Patel",
     price: 80
   },
   {
@@ -36,45 +36,47 @@ const mockActiveOrders = [
     itemDescription: "Electronic item, fragile, 1.8kg weight",
     pickupLocation: "Connaught Place, Delhi",
     deliveryLocation: "Lajpat Nagar, Delhi",
-    status: "pending",
+    status: "available",
     createdAt: "2023-08-17T11:00:00",
     estimatedDelivery: "2023-08-17T14:45:00",
-    deliveryPartner: "Not assigned",
+    customerName: "Rohit Kapoor",
     price: 150
   }
 ];
 
 const statusColors: Record<string, string> = {
-  "pending": "bg-yellow-100 text-yellow-800",
-  "accepted": "bg-blue-100 text-blue-800",
-  "in-transit": "bg-purple-100 text-purple-800",
-  "delivered": "bg-green-100 text-green-800",
-  "cancelled": "bg-red-100 text-red-800"
+  "available": "bg-green-100 text-green-800",
+  "far": "bg-yellow-100 text-yellow-800",
+  "nearby": "bg-blue-100 text-blue-800"
 };
 
 const statusText: Record<string, string> = {
-  "pending": "Waiting for a delivery partner",
-  "accepted": "Order accepted, awaiting pickup",
-  "in-transit": "Order is on the way",
-  "delivered": "Order has been delivered",
-  "cancelled": "Order was cancelled"
+  "available": "Order available for pickup",
+  "far": "Location is far from your current position",
+  "nearby": "Location is nearby your current position"
 };
 
 const ActiveOrdersPage: React.FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [distanceFilter, setDistanceFilter] = useState<string>("all");
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
+ 
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
 
-  const filteredOrders = statusFilter === "all" 
-    ? mockActiveOrders 
-    : mockActiveOrders.filter(order => order.status === statusFilter);
+  const filteredOrders = distanceFilter === "all" 
+    ? mockAvailableOrders 
+    : mockAvailableOrders.filter(order => order.status === distanceFilter);
 
   const handleOrderClick = (orderId: string) => {
     setSelectedOrder(selectedOrder === orderId ? null : orderId);
+  };
+
+  const handleAcceptOrder = (orderId: string) => {
+    // In a real app, this would make an API call to accept the order
+    alert(`Order ${orderId} accepted! This order will now appear in your "Orders Delivered" page.`);
   };
 
   return (
@@ -82,14 +84,14 @@ const ActiveOrdersPage: React.FC = () => {
       <DeliveryNavbar />
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-24 pb-12">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Active Orders</h1>
-          <p className="text-gray-600 mt-1">Track your currently active delivery orders</p>
+          <h1 className="text-2xl font-bold text-gray-900">Available Orders</h1>
+          <p className="text-gray-600 mt-1">Browse and accept new delivery orders from customers</p>
 
           <div className="mt-4 flex flex-wrap gap-2">
             <button 
-              onClick={() => setStatusFilter("all")}
+              onClick={() => setDistanceFilter("all")}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
-                statusFilter === "all" 
+                distanceFilter === "all" 
                   ? "bg-gray-900 text-white" 
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
               }`}
@@ -97,34 +99,24 @@ const ActiveOrdersPage: React.FC = () => {
               All Orders
             </button>
             <button 
-              onClick={() => setStatusFilter("pending")}
+              onClick={() => setDistanceFilter("nearby")}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
-                statusFilter === "pending" 
+                distanceFilter === "nearby" 
                   ? "bg-gray-900 text-white" 
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
               }`}
             >
-              Pending
+              Nearby
             </button>
             <button 
-              onClick={() => setStatusFilter("accepted")}
+              onClick={() => setDistanceFilter("far")}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
-                statusFilter === "accepted" 
+                distanceFilter === "far" 
                   ? "bg-gray-900 text-white" 
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
               }`}
             >
-              Accepted
-            </button>
-            <button 
-              onClick={() => setStatusFilter("in-transit")}
-              className={`px-4 py-2 rounded-md text-sm font-medium ${
-                statusFilter === "in-transit" 
-                  ? "bg-gray-900 text-white" 
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
-              }`}
-            >
-              In Transit
+              Far
             </button>
           </div>
         </div>
@@ -152,8 +144,8 @@ const ActiveOrdersPage: React.FC = () => {
                             {order.itemDescription}
                           </p>
                         </div>
-                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[order.status]}`}>
-                          {order.status.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
+                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors.available}`}>
+                          Available
                         </span>
                       </div>
 
@@ -211,7 +203,7 @@ const ActiveOrdersPage: React.FC = () => {
             {selectedOrder ? (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden h-full">
                 {(() => {
-                  const order = mockActiveOrders.find(o => o.id === selectedOrder);
+                  const order = mockAvailableOrders.find(o => o.id === selectedOrder);
                   if (!order) return null;
                   
                   return (
@@ -222,14 +214,14 @@ const ActiveOrdersPage: React.FC = () => {
                             <h2 className="text-xl font-bold text-gray-900">{order.itemName}</h2>
                             <p className="text-sm text-gray-500 mt-1">Order #{order.id}</p>
                           </div>
-                          <span className={`px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[order.status]}`}>
-                            {order.status.split("-").map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")}
+                          <span className={`px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors.available}`}>
+                            Available
                           </span>
                         </div>
                         
                         <div className="mt-4">
                           <p className="text-sm text-gray-700">
-                            {statusText[order.status]}
+                            {statusText.available}
                           </p>
                         </div>
                       </div>
@@ -261,23 +253,17 @@ const ActiveOrdersPage: React.FC = () => {
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <div>
-                            <h4 className="text-sm font-medium text-gray-900 mb-2">Delivery Partner</h4>
+                            <h4 className="text-sm font-medium text-gray-900 mb-2">Customer</h4>
                             <div className="flex items-center">
-                              {order.deliveryPartner !== "Not assigned" ? (
-                                <>
-                                  <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
-                                    <span className="text-white text-sm font-medium">
-                                      {order.deliveryPartner.charAt(0)}
-                                    </span>
-                                  </div>
-                                  <div className="ml-3">
-                                    <p className="text-sm font-medium text-gray-900">{order.deliveryPartner}</p>
-                                    <p className="text-xs text-gray-500">Delivery Partner</p>
-                                  </div>
-                                </>
-                              ) : (
-                                <p className="text-sm text-gray-500">Waiting for assignment</p>
-                              )}
+                              <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
+                                <span className="text-white text-sm font-medium">
+                                  {order.customerName.charAt(0)}
+                                </span>
+                              </div>
+                              <div className="ml-3">
+                                <p className="text-sm font-medium text-gray-900">{order.customerName}</p>
+                                <p className="text-xs text-gray-500">Customer</p>
+                              </div>
                             </div>
                           </div>
                           <div>
@@ -299,24 +285,12 @@ const ActiveOrdersPage: React.FC = () => {
                         </div>
                         
                         <div className="mt-4">
-                          {order.status === "in-transit" && (
-                            <div className="bg-blue-50 p-4 rounded-lg">
-                              <div className="flex">
-                                <div className="flex-shrink-0">
-                                  <svg className="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
-                                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                  </svg>
-                                </div>
-                                <div className="ml-3">
-                                  <h3 className="text-sm font-medium text-blue-800">Delivery in progress</h3>
-                                  <div className="mt-2 text-sm text-blue-700">
-                                    <p>Your order is on the way. You will be notified once it's delivered.</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
+                          <button 
+                            onClick={() => handleAcceptOrder(order.id)} 
+                            className="w-full py-3 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                          >
+                            Accept Order
+                          </button>
                         </div>
                       </div>
                     </>
