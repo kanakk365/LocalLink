@@ -1,37 +1,79 @@
-import React from 'react';
+import { ArrowRight, Map, DollarSign, Leaf, Clock } from "lucide-react"
 
 const Delivery = () => {
   return (
-    <section id="delivery" className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 animate__animated animate__fadeIn">
-          <h2 className="text-4xl font-bold text-neutral-900 mb-4">Community-Driven Deliveries</h2>
-          <p className="text-xl text-neutral-600">Request and fulfill deliveries along existing routes</p>
+    <section id="delivery" className="py-24 bg-secondary/30 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute top-0 left-1/4 w-64 h-64 bg-accent/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center mb-16">
+          <h2 className="text-sm font-semibold text-accent uppercase tracking-wide mb-3">Request Delivery</h2>
+          <h3 className="text-4xl font-bold text-primary mb-6">Place Your Delivery Order</h3>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Request deliveries that match with travelers already heading that way
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="animate__animated animate__fadeInLeft">
-            <div className="bg-neutral-50 rounded-xl shadow-xl p-8">
+          <div className="order-2 lg:order-1">
+            <div className="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 transform transition-all duration-500 hover:shadow-2xl">
               <form className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-2" htmlFor="delivery-pickup">Pickup Location</label>
-                  <input type="text" id="delivery-pickup" className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:ring-2 focus:ring-[#2563eb] focus:border-transparent transition" placeholder="Where to pick up your item" />
+                <div className="space-y-1">
+                  <label className="block text-sm font-medium text-primary" htmlFor="delivery-pickup">
+                    Pickup Location
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Map className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      id="delivery-pickup"
+                      className="pl-10 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 text-gray-900 focus:border-accent focus:ring-accent"
+                      placeholder="Where to pick up your item"
+                    />
+                  </div>
                 </div>
-                
-                <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-2" htmlFor="delivery-dropoff">Dropoff Location</label>
-                  <input type="text" id="delivery-dropoff" className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:ring-2 focus:ring-[#2563eb] focus:border-transparent transition" placeholder="Where to deliver your item" />
+
+                <div className="space-y-1">
+                  <label className="block text-sm font-medium text-primary" htmlFor="delivery-dropoff">
+                    Dropoff Location
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Map className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      id="delivery-dropoff"
+                      className="pl-10 block w-full rounded-lg border-gray-300 bg-gray-50 py-3 text-gray-900 focus:border-accent focus:ring-accent"
+                      placeholder="Where to deliver your item"
+                    />
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-2" htmlFor="delivery-date">Delivery By</label>
-                    <input type="date" id="delivery-date" className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:ring-2 focus:ring-[#2563eb] focus:border-transparent transition" />
+                  <div className="space-y-1">
+                    <label className="block text-sm font-medium text-primary" htmlFor="delivery-date">
+                      Delivery By
+                    </label>
+                    <input
+                      type="date"
+                      id="delivery-date"
+                      className="block w-full rounded-lg border-gray-300 bg-gray-50 py-3 text-gray-900 focus:border-accent focus:ring-accent"
+                    />
                   </div>
-                  
-                  <div>
-                    <label className="block text-sm font-medium text-neutral-700 mb-2" htmlFor="item-size">Package Size</label>
-                    <select id="item-size" className="w-full px-4 py-3 rounded-lg border border-neutral-300 focus:ring-2 focus:ring-[#2563eb] focus:border-transparent transition">
+
+                  <div className="space-y-1">
+                    <label className="block text-sm font-medium text-primary" htmlFor="item-size">
+                      Package Size
+                    </label>
+                    <select
+                      id="item-size"
+                      className="block w-full rounded-lg border-gray-300 bg-gray-50 py-3 text-gray-900 focus:border-accent focus:ring-accent"
+                    >
                       <option value="small">Small (fits in pocket)</option>
                       <option value="medium">Medium (shoebox)</option>
                       <option value="large">Large (backpack)</option>
@@ -40,99 +82,127 @@ const Delivery = () => {
                   </div>
                 </div>
 
-                <button type="submit" className="w-full bg-[#2563eb] text-white py-3 px-6 rounded-lg hover:bg-blue-700 transform hover:scale-105 transition-all duration-300">
-                  Find Delivery Partners
+                <button
+                  type="submit"
+                  className="w-full inline-flex justify-center items-center bg-accent text-white py-3 px-6 rounded-lg hover:bg-accent-dark transition-all duration-300 shadow-lg shadow-accent/20 font-medium"
+                >
+                  Place Order
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </button>
               </form>
             </div>
           </div>
 
-          <div className="space-y-8 animate__animated animate__fadeInRight">
-            <div className="bg-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300">
-              <div className="flex items-center space-x-4">
-                <div className="p-3 bg-[#2563eb]/10 rounded-full">
-                  <svg className="w-6 h-6 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                  </svg>
+          <div className="order-1 lg:order-2 space-y-6">
+            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 transform hover:-translate-y-1">
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0">
+                  <div className="p-3 bg-primary/10 rounded-xl">
+                    <Map className="w-6 h-6 text-primary" />
+                  </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">Utilize Existing Routes</h3>
-                  <p className="text-neutral-600">Items delivered by people already traveling that way</p>
+                  <h3 className="font-semibold text-lg text-primary">Utilize Existing Routes</h3>
+                  <p className="text-gray-600 mt-1">
+                    Items delivered by people already traveling that way, reducing unnecessary trips and carbon
+                    emissions.
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300">
-              <div className="flex items-center space-x-4">
-                <div className="p-3 bg-[#2563eb]/10 rounded-full">
-                  <svg className="w-6 h-6 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
+            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 transform hover:-translate-y-1">
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0">
+                  <div className="p-3 bg-accent/10 rounded-xl">
+                    <DollarSign className="w-6 h-6 text-accent" />
+                  </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">Cost-Effective Deliveries</h3>
-                  <p className="text-neutral-600">Save money compared to traditional courier services</p>
+                  <h3 className="font-semibold text-lg text-primary">Cost-Effective Deliveries</h3>
+                  <p className="text-gray-600 mt-1">
+                    Save up to 70% compared to traditional courier services by leveraging community resources.
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300">
-              <div className="flex items-center space-x-4">
-                <div className="p-3 bg-[#2563eb]/10 rounded-full">
-                  <svg className="w-6 h-6 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-                  </svg>
+            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 transform hover:-translate-y-1">
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0">
+                  <div className="p-3 bg-accent/10 rounded-xl">
+                    <Leaf className="w-6 h-6 text-accent" />
+                  </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">Eco-Friendly Solution</h3>
-                  <p className="text-neutral-600">Reduce carbon footprint by optimizing existing trips</p>
+                  <h3 className="font-semibold text-lg text-primary">Eco-Friendly Solution</h3>
+                  <p className="text-gray-600 mt-1">
+                    Reduce carbon footprint by optimizing existing trips instead of adding new delivery vehicles.
+                  </p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300">
-              <div className="flex items-center space-x-4">
-                <div className="p-3 bg-[#2563eb]/10 rounded-full">
-                  <svg className="w-6 h-6 text-[#2563eb]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+            <div className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 transform hover:-translate-y-1">
+              <div className="flex items-start space-x-4">
+                <div className="flex-shrink-0">
+                  <div className="p-3 bg-primary/10 rounded-xl">
+                    <Clock className="w-6 h-6 text-primary" />
+                  </div>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-lg">On-Demand or Scheduled</h3>
-                  <p className="text-neutral-600">Get deliveries when you need them or plan ahead</p>
+                  <h3 className="font-semibold text-lg text-primary">On-Demand or Scheduled</h3>
+                  <p className="text-gray-600 mt-1">
+                    Get deliveries when you need them or plan ahead with our flexible scheduling options.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-16 bg-neutral-50 rounded-xl p-8 animate__animated animate__fadeIn">
-          <h3 className="text-2xl font-bold text-center mb-8">How Community Delivery Works</h3>
-          <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div className="relative">
-              <div className="w-16 h-16 bg-[#2563eb] rounded-full flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">1</div>
-              <h4 className="font-semibold text-lg mb-2">Post Your Delivery Need</h4>
-              <p className="text-neutral-600">Describe what needs to be delivered, when, and where</p>
-              <div className="hidden md:block absolute top-8 right-0 w-full h-1 bg-[#2563eb]/30"></div>
+        <div className="mt-20 bg-white rounded-2xl p-10 shadow-xl border border-gray-100">
+          <h3 className="text-2xl font-bold text-center mb-12 text-primary">How Community Delivery Works</h3>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="relative flex flex-col items-center">
+              <div className="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-accent/20 mb-6 rotate-3">
+                1
+              </div>
+              <h4 className="font-semibold text-lg mb-2 text-primary text-center">Post Your Delivery Need</h4>
+              <p className="text-gray-600 text-center">Describe what needs to be delivered, when, and where</p>
+
+              {/* Connector line */}
+              <div className="hidden md:block absolute top-8 left-full w-full h-0.5 bg-accent/20 -z-10">
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-accent rounded-full"></div>
+              </div>
             </div>
-            
-            <div className="relative">
-              <div className="w-16 h-16 bg-[#2563eb] rounded-full flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">2</div>
-              <h4 className="font-semibold text-lg mb-2">Match With a Traveler</h4>
-              <p className="text-neutral-600">Connect with someone already traveling along your route</p>
-              <div className="hidden md:block absolute top-8 right-0 w-full h-1 bg-[#2563eb]/30"></div>
+
+            <div className="relative flex flex-col items-center">
+              <div className="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-accent/20 mb-6 -rotate-3">
+                2
+              </div>
+              <h4 className="font-semibold text-lg mb-2 text-primary text-center">Match With a Traveler</h4>
+              <p className="text-gray-600 text-center">Connect with someone already traveling along your route</p>
+
+              {/* Connector line */}
+              <div className="hidden md:block absolute top-8 left-full w-full h-0.5 bg-accent/20 -z-10">
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-accent rounded-full"></div>
+              </div>
             </div>
-            
-            <div>
-              <div className="w-16 h-16 bg-[#2563eb] rounded-full flex items-center justify-center text-white text-xl font-bold mx-auto mb-4">3</div>
-              <h4 className="font-semibold text-lg mb-2">Track & Receive</h4>
-              <p className="text-neutral-600">Follow your delivery in real-time and receive your item</p>
+
+            <div className="flex flex-col items-center">
+              <div className="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center text-white text-xl font-bold shadow-lg shadow-accent/20 mb-6 rotate-3">
+                3
+              </div>
+              <h4 className="font-semibold text-lg mb-2 text-primary text-center">Track & Receive</h4>
+              <p className="text-gray-600 text-center">Follow your delivery in real-time and receive your item</p>
             </div>
           </div>
         </div>
       </div>
     </section>
-  );
-};
+  )
+}
 
-export default Delivery;
+export default Delivery
+

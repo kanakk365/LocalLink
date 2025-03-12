@@ -5,7 +5,7 @@ import { RootState } from "../../store/store";
 import { logout } from "../../store/slice/authSlice";
 import { useAuth0 } from "@auth0/auth0-react";
 
-const OrderNavbar: React.FC = () => {
+const DeliveryNavbar: React.FC = () => {
   const { isAuthenticated, user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ const OrderNavbar: React.FC = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
             <Link to="/" className="flex items-center space-x-2">
-              <svg className="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-8 w-8 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
                   d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
@@ -47,8 +47,8 @@ const OrderNavbar: React.FC = () => {
               to="/orders-delivered"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                 isOrdersDeliveredPage 
-                  ? "bg-blue-100 text-blue-800" 
-                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                  ? "bg-secondary text-primary" 
+                  : "text-gray-700 hover:bg-gray-100 hover:text-primary"
               }`}
             >
               <div className="flex items-center">
@@ -64,8 +64,8 @@ const OrderNavbar: React.FC = () => {
               to="/active-orders"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                 isActiveOrdersPage 
-                  ? "bg-blue-100 text-blue-800" 
-                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                  ? "bg-secondary text-primary" 
+                  : "text-gray-700 hover:bg-gray-100 hover:text-primary"
               }`}
             >
               <div className="flex items-center">
@@ -79,14 +79,12 @@ const OrderNavbar: React.FC = () => {
             
             {isAuthenticated && (
               <>
-              
-                
                 <Link
                   to="/orders"
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                     isOrderPage 
-                      ? "bg-blue-100 text-blue-800" 
-                      : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      ? "bg-secondary text-primary" 
+                      : "text-gray-700 hover:bg-gray-100 hover:text-primary"
                   }`}
                 >
                   <div className="flex items-center">
@@ -94,7 +92,7 @@ const OrderNavbar: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
                         d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                     </svg>
-                    Orders Something
+                    Orders
                   </div>
                 </Link>
               </>
@@ -105,7 +103,7 @@ const OrderNavbar: React.FC = () => {
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
-                  <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                  <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
                     <span className="text-white text-sm font-medium">
                       {user?.name?.charAt(0).toUpperCase()}
                     </span>
@@ -116,7 +114,7 @@ const OrderNavbar: React.FC = () => {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                  className="bg-secondary hover:bg-gray-300 text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
                 >
                   Logout
                 </button>
@@ -124,7 +122,7 @@ const OrderNavbar: React.FC = () => {
             ) : (
               <Link
                 to="/login"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
               >
                 Login
               </Link>
@@ -178,7 +176,7 @@ const OrderNavbar: React.FC = () => {
               to="/my-orders"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
                 isMyOrdersPage 
-                  ? "bg-blue-100 text-blue-800" 
+                  ? "bg-indigo-100 text-indigo-800" 
                   : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >
@@ -189,7 +187,7 @@ const OrderNavbar: React.FC = () => {
               to="/active-routes"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
                 isActiveRoutesPage 
-                  ? "bg-blue-100 text-blue-800" 
+                  ? "bg-indigo-100 text-indigo-800" 
                   : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >
@@ -200,7 +198,7 @@ const OrderNavbar: React.FC = () => {
               to="/orders-delivered"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
                 isOrdersDeliveredPage 
-                  ? "bg-blue-100 text-blue-800" 
+                  ? "bg-indigo-100 text-indigo-800" 
                   : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >
@@ -211,7 +209,7 @@ const OrderNavbar: React.FC = () => {
               to="/active-orders"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
                 isActiveOrdersPage 
-                  ? "bg-blue-100 text-blue-800" 
+                  ? "bg-indigo-100 text-indigo-800" 
                   : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >
@@ -220,13 +218,11 @@ const OrderNavbar: React.FC = () => {
             
             {isAuthenticated && (
               <>
-            
-                
                 <Link
                   to="/orders"
                   className={`block px-3 py-2 rounded-md text-base font-medium ${
                     isOrderPage 
-                      ? "bg-blue-100 text-blue-800" 
+                      ? "bg-indigo-100 text-indigo-800" 
                       : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
                   }`}
                 >
@@ -239,7 +235,7 @@ const OrderNavbar: React.FC = () => {
               {isAuthenticated ? (
                 <>
                   <div className="px-3 py-2 flex items-center space-x-3">
-                    <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center">
                       <span className="text-white text-sm font-medium">
                         {user?.name?.charAt(0).toUpperCase()}
                       </span>
@@ -258,7 +254,7 @@ const OrderNavbar: React.FC = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="block bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-base font-medium"
+                  className="block bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-md text-base font-medium"
                 >
                   Login
                 </Link>
@@ -271,4 +267,4 @@ const OrderNavbar: React.FC = () => {
   );
 };
 
-export default OrderNavbar;
+export default DeliveryNavbar;

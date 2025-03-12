@@ -4,6 +4,7 @@ import { RootState } from "../store/store";
 import { Navigate } from "react-router-dom";
 import DeliveryNavbar from "@/components/DeliveryComp/DeliveryNavbar";
 import useIsMobile from "@/lib/hooks/useIsMobile";
+import axios from "axios";
 
 // Mock available orders data - orders posted by users that delivery partners can accept
 const mockAvailableOrders = [
@@ -48,7 +49,7 @@ const mockAvailableOrders = [
 const statusColors: Record<string, string> = {
   available: "bg-green-100 text-green-800",
   far: "bg-yellow-100 text-yellow-800",
-  nearby: "bg-blue-100 text-blue-800",
+  nearby: "bg-accent/20 text-accent",
 };
 
 const statusText: Record<string, string> = {
@@ -57,12 +58,45 @@ const statusText: Record<string, string> = {
   nearby: "Location is nearby your current position",
 };
 
+export interface ActiveOrder {
+  id: string;
+  itemName: string;
+  itemDescription: string;
+  pickupLocation: string;
+  deliveryLocation: string;
+  status:
+    | "available"
+    | "far"
+    | "nearby"
+    | "accepted"
+    | "in-transit"
+    | "delivered"
+    | "cancelled";
+  createdAt: string;
+  estimatedDelivery: string;
+  customerName: string;
+  price: number;
+}
+
 const ActiveOrdersPage: React.FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const [distanceFilter, setDistanceFilter] = useState<string>("all");
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
+  const [activeOrders, setActiveOrders] = useState<ActiveOrder[]>();
 
   const isMobile = useIsMobile();
+
+  const getActiveOrders = async () => {
+    try {
+      const res = await axios.get(":(");
+      setActiveOrders(res);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getActiveOrders();
+  });
 
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
@@ -77,11 +111,17 @@ const ActiveOrdersPage: React.FC = () => {
     setSelectedOrder(selectedOrder === orderId ? null : orderId);
   };
 
-  const handleAcceptOrder = (orderId: string) => {
+  const handleAcceptOrder = async (orderId: string) => {
     // In a real app, this would make an API call to accept the order
-    alert(
-      `Order ${orderId} accepted! This order will now appear in your "Orders Delivered" page.`
-    );
+    try {
+      const res = await axios.post("dfodfa", { orderId: orderId });
+      console.log(res);
+      alert(
+        `Order ${orderId} accepted! This order will now appear in your "Orders Delivered" page.`
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -99,7 +139,7 @@ const ActiveOrdersPage: React.FC = () => {
               onClick={() => setDistanceFilter("all")}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
                 distanceFilter === "all"
-                  ? "bg-gray-900 text-white"
+                  ? "bg-accent text-white"
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
               }`}
             >
@@ -109,7 +149,7 @@ const ActiveOrdersPage: React.FC = () => {
               onClick={() => setDistanceFilter("nearby")}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
                 distanceFilter === "nearby"
-                  ? "bg-gray-900 text-white"
+                  ? "bg-accent text-white"
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
               }`}
             >
@@ -119,7 +159,7 @@ const ActiveOrdersPage: React.FC = () => {
               onClick={() => setDistanceFilter("far")}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
                 distanceFilter === "far"
-                  ? "bg-gray-900 text-white"
+                  ? "bg-accent text-white"
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
               }`}
             >
@@ -141,7 +181,7 @@ const ActiveOrdersPage: React.FC = () => {
                         onClick={() => handleOrderClick(order.id)}
                         className={`p-4 cursor-pointer transition-colors duration-150 ${
                           selectedOrder === order.id
-                            ? "bg-blue-50"
+                            ? "bg-accent/10"
                             : "hover:bg-gray-50"
                         }`}
                       >
@@ -215,63 +255,77 @@ const ActiveOrdersPage: React.FC = () => {
                           </div>
                         </div>
                       </div>
-                     {
-                      isMobile && selectedOrder === order.id ? (
-                       (()=> {
-                        const order = mockAvailableOrders.find((o)=>o.id === selectedOrder)
-                        if (!order) return null
+                      {isMobile && selectedOrder === order.id
+                        ? (() => {
+                            const order = mockAvailableOrders.find(
+                              (o) => o.id === selectedOrder
+                            );
+                            if (!order) return null;
 
-                        return( 
-                          <div className="flex flex-col p-4 border-t border-gray-200 bg-gray-50">
-                          <h1 className="font-medium text-gray-900 mb-2">Delivery Information</h1>
-                          <div className="flex justify-between">
-                            <div>
-                              <h1 className="text-sm font-medium text-gray-700">Customer</h1>
-                              <div className="flex gap-2 items-center mt-1">
-                              <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
-                                    <span className="text-white text-sm font-medium">
-                                      {order.customerName.charAt(0)}
-                                    </span>
+                            return (
+                              <div className="flex flex-col p-4 border-t border-gray-200 bg-gray-50">
+                                <h1 className="font-medium text-gray-900 mb-2">
+                                  Delivery Information
+                                </h1>
+                                <div className="flex justify-between">
+                                  <div>
+                                    <h1 className="text-sm font-medium text-gray-700">
+                                      Customer
+                                    </h1>
+                                    <div className="flex gap-2 items-center mt-1">
+                                      <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center">
+                                        <span className="text-white text-sm font-medium">
+                                          {order.customerName.charAt(0)}
+                                        </span>
+                                      </div>
+                                      <div>
+                                        <h1 className="text-sm font-medium">
+                                          {order.customerName}
+                                        </h1>
+                                        <p className="text-xs text-gray-600">
+                                          Customer
+                                        </p>
+                                      </div>
+                                    </div>
                                   </div>
-                                <div>
-                                <h1 className="text-sm font-medium">{order.customerName}</h1>
-                                <p className="text-xs text-gray-600">Customer</p>
+                                  <div>
+                                    <h1 className="text-sm font-medium text-gray-700">
+                                      Delivery Time
+                                    </h1>
+                                    <div className="mt-1">
+                                      <p className="text-sm text-gray-700">
+                                        Estimated:{" "}
+                                        {new Date(
+                                          order.estimatedDelivery
+                                        ).toLocaleTimeString()}{" "}
+                                        on{" "}
+                                        {new Date(
+                                          order.estimatedDelivery
+                                        ).toLocaleDateString()}
+                                      </p>
+                                      <p className="text-xs text-gray-500 mt-1">
+                                        Order placed:{" "}
+                                        {new Date(
+                                          order.createdAt
+                                        ).toLocaleTimeString()}{" "}
+                                        on{" "}
+                                        {new Date(
+                                          order.createdAt
+                                        ).toLocaleDateString()}
+                                      </p>
+                                    </div>
+                                  </div>
                                 </div>
+                                <button
+                                  onClick={() => handleAcceptOrder(order.id)}
+                                  className="mt-4 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-accent hover:bg-accent/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
+                                >
+                                  Accept Order
+                                </button>
                               </div>
-                            </div>
-                            <div>
-                              <h1 className="text-sm font-medium text-gray-700">Delivery Time</h1>
-                              <div className="mt-1">
-                                <p className="text-sm text-gray-700">
-                                  Estimated:{" "}
-                                  {new Date(
-                                    order.estimatedDelivery
-                                  ).toLocaleTimeString()}{" "}
-                                  on{" "}
-                                  {new Date(
-                                    order.estimatedDelivery
-                                  ).toLocaleDateString()}
-                                </p>
-                                <p className="text-xs text-gray-500 mt-1">
-                                  Order placed:{" "}
-                                  {new Date(order.createdAt).toLocaleTimeString()}{" "}
-                                  on{" "}
-                                  {new Date(order.createdAt).toLocaleDateString()}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => handleAcceptOrder(order.id)}
-                            className="mt-4 py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-                          >
-                            Accept Order
-                          </button>
-                        </div>
-                        )
-                      })()                    
-                      ):null
-                     }
+                            );
+                          })()
+                        : null}
                     </div>
                   ))
                 ) : (
@@ -433,7 +487,7 @@ const ActiveOrdersPage: React.FC = () => {
                           <div className="mt-4">
                             <button
                               onClick={() => handleAcceptOrder(order.id)}
-                              className="w-full py-3 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                              className="w-full py-3 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-accent hover:bg-accent/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent"
                             >
                               Accept Order
                             </button>

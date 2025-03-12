@@ -4,6 +4,7 @@ import { addRoute } from "../../store/slice/routeSlice";
 import { RootState } from "../../store/store";
 import { v4 as uuidv4 } from "uuid";
 import RouteMap from "../ui/RouteMap";
+import axios from "axios";
 
 const CreateRoute: React.FC = () => {
   const dispatch = useDispatch();
@@ -39,19 +40,13 @@ const CreateRoute: React.FC = () => {
       return;
     }
 
-    // Create new route with generated ID
-    dispatch(
-      addRoute({
-        id: uuidv4(),
-        userId: user.email || "",
-        userName: user.name || "",
-        startLocation: formData.startLocation,
-        endLocation: formData.endLocation,
-        date: formData.date,
-        time: formData.time,
-        status: "active",
-      })
-    );
+    try {
+      const res = axios.post("0_0" , formData)
+      
+    } catch (error) {
+      console.log(error)
+    }
+    
 
     // Reset form
     setFormData({

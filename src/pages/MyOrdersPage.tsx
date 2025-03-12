@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { Navigate } from "react-router-dom";
-import OrderNavbar from "@/components/OrderNavbar";
+import OrderNavbar from "@/components/OrdersComp/OrderNavbar";
 import axios from "axios";
 
 // Mock data - would be replaced with actual API data
@@ -56,7 +56,7 @@ interface Order {
 
 const statusColors: Record<string, string> = {
   "pending": "bg-yellow-100 text-yellow-800",
-  "in-progress": "bg-blue-100 text-blue-800",
+  "in-progress": "bg-accent/20 text-accent-foreground",
   "completed": "bg-green-100 text-green-800",
   "cancelled": "bg-red-100 text-red-800",
 };
@@ -93,20 +93,20 @@ const MyOrdersPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-secondary/30 flex flex-col">
       <OrderNavbar />
       <div className="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-24 pb-12">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">My Orders</h1>
-          <p className="text-gray-600 mt-1">View and manage all your delivery orders</p>
+          <h1 className="text-2xl font-bold text-primary">My Orders</h1>
+          <p className="text-primary/70 mt-1">View and manage all your delivery orders</p>
           
           <div className="mt-4 flex space-x-2">
             <button 
               onClick={() => setStatusFilter("all")}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
                 statusFilter === "all" 
-                  ? "bg-gray-900 text-white" 
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  ? "bg-primary text-white" 
+                  : "bg-white text-primary border border-gray-300 hover:bg-secondary"
               }`}
             >
               All
@@ -115,8 +115,8 @@ const MyOrdersPage: React.FC = () => {
               onClick={() => setStatusFilter("pending")}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
                 statusFilter === "pending" 
-                  ? "bg-gray-900 text-white" 
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  ? "bg-primary text-white" 
+                  : "bg-white text-primary border border-gray-300 hover:bg-secondary"
               }`}
             >
               Pending
@@ -125,8 +125,8 @@ const MyOrdersPage: React.FC = () => {
               onClick={() => setStatusFilter("in-progress")}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
                 statusFilter === "in-progress" 
-                  ? "bg-gray-900 text-white" 
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  ? "bg-primary text-white" 
+                  : "bg-white text-primary border border-gray-300 hover:bg-secondary"
               }`}
             >
               In Progress
@@ -135,8 +135,8 @@ const MyOrdersPage: React.FC = () => {
               onClick={() => setStatusFilter("completed")}
               className={`px-4 py-2 rounded-md text-sm font-medium ${
                 statusFilter === "completed" 
-                  ? "bg-gray-900 text-white" 
-                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
+                  ? "bg-primary text-white" 
+                  : "bg-white text-primary border border-gray-300 hover:bg-secondary"
               }`}
             >
               Completed
@@ -144,48 +144,48 @@ const MyOrdersPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm border border-secondary overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-secondary">
+              <thead className="bg-secondary/50">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primary/70 uppercase tracking-wider">
                     Order Details
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primary/70 uppercase tracking-wider">
                     Locations
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primary/70 uppercase tracking-wider">
                     Deadline
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primary/70 uppercase tracking-wider">
                     Budget
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primary/70 uppercase tracking-wider">
                     Status
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-secondary">
                 {filteredOrders.length > 0 ? (
                   filteredOrders.map((order) => (
                     <React.Fragment key={order.id}>
                       <tr 
                         onClick={() => handleOrderClick(order.id)}
-                        className="cursor-pointer hover:bg-gray-50"
+                        className="cursor-pointer hover:bg-secondary/30"
                       >
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">{order.itemName}</div>
-                          <div className="text-sm text-gray-500">Order #{order.id}</div>
+                          <div className="text-sm font-medium text-primary">{order.itemName}</div>
+                          <div className="text-sm text-primary/70">Order #{order.id}</div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900">From: {order.pickup}</div>
-                          <div className="text-sm text-gray-500">To: {order.dropoff}</div>
+                          <div className="text-sm text-primary">From: {order.pickup}</div>
+                          <div className="text-sm text-primary/70">To: {order.dropoff}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-primary/70">
                           {new Date(order.deliveryDeadline).toLocaleString()}
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-primary/70">
                           ₹{order.budget}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -196,14 +196,14 @@ const MyOrdersPage: React.FC = () => {
                       </tr>
                       {selectedOrder === order.id && (
                         <tr>
-                          <td colSpan={5} className="px-6 py-4 bg-gray-50">
+                          <td colSpan={5} className="px-6 py-4 bg-secondary/30">
                             <div className="text-sm">
-                              <h4 className="font-medium text-gray-900 mb-2">Order Details</h4>
-                              <p className="text-gray-600 mb-2"><span className="font-medium">Description:</span> {order.description}</p>
-                              <p className="text-gray-600 mb-2"><span className="font-medium">Created:</span> {new Date(order.createdAt).toLocaleString()}</p>
+                              <h4 className="font-medium text-primary mb-2">Order Details</h4>
+                              <p className="text-primary/80 mb-2"><span className="font-medium">Description:</span> {order.description}</p>
+                              <p className="text-primary/80 mb-2"><span className="font-medium">Created:</span> {new Date(order.createdAt).toLocaleString()}</p>
                               
                               <div className="mt-4 flex space-x-4">
-                                <button className="px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700">
+                                <button className="px-3 py-1 bg-accent text-white text-xs rounded hover:bg-accent/90">
                                   Track Order
                                 </button>
                                 {order.status === "pending" && (
@@ -220,7 +220,7 @@ const MyOrdersPage: React.FC = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+                    <td colSpan={5} className="px-6 py-4 text-center text-sm text-primary/70">
                       No orders found with the selected filter.
                     </td>
                   </tr>

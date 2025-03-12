@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../store/store";
-import { logout } from "../store/slice/authSlice";
+import { RootState } from "../../store/store";
+import { logout } from "../../store/slice/authSlice";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const OrderNavbar: React.FC = () => {
@@ -30,13 +30,13 @@ const OrderNavbar: React.FC = () => {
         <div className="flex items-center justify-between h-16">
           <div className="flex-shrink-0 flex items-center">
             <Link to="/" className="flex items-center space-x-2">
-              <svg className="h-8 w-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-8 w-8 text-[#1ABC9C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
                   d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" 
                   d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              <span className="text-gray-900 text-xl font-bold tracking-tight">LocalLink</span>
+              <span className="text-[#2C3E50] text-xl font-bold tracking-tight">LocalLink</span>
             </Link>
           </div>
 
@@ -45,8 +45,8 @@ const OrderNavbar: React.FC = () => {
               to="/my-orders"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                 isMyOrdersPage 
-                  ? "bg-blue-100 text-blue-800" 
-                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                  ? "bg-[#ECF0F1] text-[#2C3E50]" 
+                  : "text-[#2C3E50] hover:bg-[#ECF0F1] hover:text-[#2C3E50]"
               }`}
             >
               <div className="flex items-center">
@@ -62,8 +62,8 @@ const OrderNavbar: React.FC = () => {
               to="/active-routes"
               className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                 isActiveRoutesPage 
-                  ? "bg-blue-100 text-blue-800" 
-                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                  ? "bg-[#ECF0F1] text-[#2C3E50]" 
+                  : "text-[#2C3E50] hover:bg-[#ECF0F1] hover:text-[#2C3E50]"
               }`}
             >
               <div className="flex items-center">
@@ -81,8 +81,8 @@ const OrderNavbar: React.FC = () => {
                   to="/delivery"
                   className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                     isDeliveryPage 
-                      ? "bg-blue-100 text-blue-800" 
-                      : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      ? "bg-[#ECF0F1] text-[#2C3E50]" 
+                      : "text-[#2C3E50] hover:bg-[#ECF0F1] hover:text-[#2C3E50]"
                   }`}
                 >
                   <div className="flex items-center">
@@ -98,23 +98,23 @@ const OrderNavbar: React.FC = () => {
               </>
             )}
             
-            <div className="h-5 w-px bg-gray-300 mx-1"></div>
+            <div className="h-5 w-px bg-[#ECF0F1] mx-1"></div>
             
             {isAuthenticated ? (
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2">
-                  <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                  <div className="h-8 w-8 rounded-full bg-[#1ABC9C] flex items-center justify-center">
                     <span className="text-white text-sm font-medium">
                       {user?.name?.charAt(0).toUpperCase()}
                     </span>
                   </div>
-                  <span className="text-gray-700 text-sm font-medium">
+                  <span className="text-[#2C3E50] text-sm font-medium">
                     {user?.name}
                   </span>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                  className="bg-[#ECF0F1] hover:bg-[#d8dcdd] text-[#2C3E50] px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
                 >
                   Logout
                 </button>
@@ -122,7 +122,7 @@ const OrderNavbar: React.FC = () => {
             ) : (
               <Link
                 to="/login"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                className="bg-[#1ABC9C] hover:bg-[#15a589] text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
               >
                 Login
               </Link>
@@ -132,7 +132,7 @@ const OrderNavbar: React.FC = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-md text-[#2C3E50] hover:text-[#2C3E50] hover:bg-[#ECF0F1] focus:outline-none"
               aria-expanded={isMenuOpen}
             >
               <span className="sr-only">{isMenuOpen ? 'Close menu' : 'Open menu'}</span>
@@ -170,14 +170,14 @@ const OrderNavbar: React.FC = () => {
           </div>
         </div>
 
-        <div className={`${isMenuOpen ? "block" : "hidden"} md:hidden border-t border-gray-200 pt-2`}>
+        <div className={`${isMenuOpen ? "block" : "hidden"} md:hidden border-t border-[#ECF0F1] pt-2`}>
           <div className="px-2 py-2 space-y-1">
             <Link
               to="/my-orders"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
                 isMyOrdersPage 
-                  ? "bg-blue-100 text-blue-800" 
-                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                  ? "bg-[#ECF0F1] text-[#2C3E50]" 
+                  : "text-[#2C3E50] hover:bg-[#ECF0F1] hover:text-[#2C3E50]"
               }`}
             >
               My Orders
@@ -187,8 +187,8 @@ const OrderNavbar: React.FC = () => {
               to="/active-routes"
               className={`block px-3 py-2 rounded-md text-base font-medium ${
                 isActiveRoutesPage 
-                  ? "bg-blue-100 text-blue-800" 
-                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                  ? "bg-[#ECF0F1] text-[#2C3E50]" 
+                  : "text-[#2C3E50] hover:bg-[#ECF0F1] hover:text-[#2C3E50]"
               }`}
             >
               Active Routes
@@ -200,8 +200,8 @@ const OrderNavbar: React.FC = () => {
                   to="/delivery"
                   className={`block px-3 py-2 rounded-md text-base font-medium ${
                     isDeliveryPage 
-                      ? "bg-blue-100 text-blue-800" 
-                      : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                      ? "bg-[#ECF0F1] text-[#2C3E50]" 
+                      : "text-[#2C3E50] hover:bg-[#ECF0F1] hover:text-[#2C3E50]"
                   }`}
                 >
                   Delivery
@@ -211,22 +211,22 @@ const OrderNavbar: React.FC = () => {
               </>
             )}
 
-            <div className="my-3 border-t border-gray-200 pt-3">
+            <div className="my-3 border-t border-[#ECF0F1] pt-3">
               {isAuthenticated ? (
                 <>
                   <div className="px-3 py-2 flex items-center space-x-3">
-                    <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center">
+                    <div className="h-8 w-8 rounded-full bg-[#1ABC9C] flex items-center justify-center">
                       <span className="text-white text-sm font-medium">
                         {user?.name?.charAt(0).toUpperCase()}
                       </span>
                     </div>
-                    <span className="text-gray-900 text-base font-medium">
+                    <span className="text-[#2C3E50] text-base font-medium">
                       {user?.name}
                     </span>
                   </div>
                   <button
                     onClick={handleLogout}
-                    className="mt-2 w-full text-left block bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-2 rounded-md text-base font-medium"
+                    className="mt-2 w-full text-left block bg-[#ECF0F1] hover:bg-[#d8dcdd] text-[#2C3E50] px-3 py-2 rounded-md text-base font-medium"
                   >
                     Logout
                   </button>
@@ -234,7 +234,7 @@ const OrderNavbar: React.FC = () => {
               ) : (
                 <Link
                   to="/login"
-                  className="block bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-base font-medium"
+                  className="block bg-[#1ABC9C] hover:bg-[#15a589] text-white px-3 py-2 rounded-md text-base font-medium"
                 >
                   Login
                 </Link>
