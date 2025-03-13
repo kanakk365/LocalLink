@@ -20,6 +20,7 @@ const CreateRoute: React.FC = () => {
   const [isRecurring, setIsRecurring] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(formData)
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -32,8 +33,9 @@ const CreateRoute: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(formData)
 
     if (!user) {
       alert("You must be logged in to create a route");
@@ -41,7 +43,7 @@ const CreateRoute: React.FC = () => {
     }
 
     try {
-      const res = axios.post("0_0" , formData)
+      const res = await axios.post("0_0" , formData)
       
     } catch (error) {
       console.log(error)
