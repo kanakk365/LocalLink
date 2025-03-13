@@ -4,48 +4,57 @@ import { useDispatch } from "react-redux";
 import { login } from "../store/slice/authSlice";
 
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loginWithPopup, user, getAccessTokenSilently } = useAuth0();
+  const { loginWithPopup, user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [isLoggingIn, setIsLoggingIn] = useState(false)
+
+  useEffect(()=>{
+    const completeLogin = async ()=>{
+      if(isLoggingIn && isAuthenticated && user ){
+        try {
+          const token = await getAccessTokenSilently()
+          console.log(user , token)
+
+          dispatch(
+            login({
+              user:{email: user?.email ?? "" , name:user?.name ?? ""},
+              token:token??"",
+            })
+          )
+          const config = {
+            email: user?.email,
+            name: user?.name,
+            token: token,
+          }
+          const res = await axios.post("http://127.0.0.1:8000/api/google-login/", config)
+          console.log(res)
+
+          navigate("order")
+          setIsLoggingIn(false)
+        } catch (error) {
+          console.error("Login completion failed", error);
+          setIsLoggingIn(false)
+        }
+      }
+    }
+    completeLogin();
+  },[isAuthenticated, user, isLoggingIn, dispatch, getAccessTokenSilently, navigate])
 
   const handleGoogleLogin = async () => {
     try {
+      setIsLoggingIn(true)
       await loginWithPopup({
         authorizationParams: {
           connection: "google-oauth2",
         },
       });
 
-      const token = await getAccessTokenSilently();
-      console.log(user);
-      console.log("Token:", token);
-
-      // Dispatch login to Redux store
-      dispatch(
-        login({
-          user: { email: user?.email ?? "", name: user?.name ?? "" },
-          token: token ?? "",
-        })
-      );
-
-      // Send token to Django backend
-      await fetch("http://127.0.0.1:8000/api/google-login/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Sending token in Authorization header
-        },
-        body: JSON.stringify({
-          email: user?.email,
-          name: user?.name,
-          token: token,
-        }),
-      });
-
-      // Direct to delivery page instead of generic app page
-      navigate("/delivery");
+      
     } catch (error) {
       console.error("Login failed", error);
     }
