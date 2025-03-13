@@ -34,7 +34,7 @@ export default function Login() {
           const res = await axios.post("http://127.0.0.1:8000/api/google-login/", config)
           console.log(res)
 
-          navigate("order")
+          navigate("/orders")
           setIsLoggingIn(false)
         } catch (error) {
           console.error("Login completion failed", error);
